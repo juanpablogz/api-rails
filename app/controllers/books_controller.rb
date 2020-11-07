@@ -1,3 +1,4 @@
+require 'byebug'
 class BooksController < ApplicationController
   before_action :authenticate_user!
   before_action :set_book, only: [:show, :update, :destroy]
@@ -5,10 +6,13 @@ class BooksController < ApplicationController
   # GET /books
   def index
     @books = Book.all
-
     render json: @books
-  end
-
+  end 
+  def user_books
+    @books = Book.where(user_id: @current_user )
+      render json: @books
+  end 
+  # /books
   # GET /books/1
   def show
     render json: @book
@@ -38,11 +42,13 @@ class BooksController < ApplicationController
   def destroy
     @book.destroy
   end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book
       @book = Book.find(params[:id])
+    end
+    def book_user
+      @book = Book.find(params[:uid])
     end
 
     # Only allow a trusted parameter "white list" through.
